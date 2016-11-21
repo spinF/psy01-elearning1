@@ -1,0 +1,36 @@
+import groovy.io.FileType
+
+task clean(type: Delete) {
+  delete 'build'
+}
+
+task buildR {
+  doLast {
+    new File('src/').eachFileRecurse(FileType.FILES) {
+      file ->
+      if (file.name.endsWith('.R')) {
+        exec {
+          commandLine 'R', '-f', file.absolutePath
+        }
+      }
+    }
+  }
+}
+
+task copyLatex(type: Copy) {
+  from 'src'
+  into 'build'
+  include '**/*.tex'
+}
+
+task buildLatex(type: Exec) {
+  dependsOn copyLatex
+  dependsOn buildR
+
+  workingDir 'build'
+  commandLine 'pdflatex', 'lektion1.tex'
+}
+
+task build {
+  dependsOn buildLatex
+}
