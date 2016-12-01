@@ -1,0 +1,29 @@
+{
+  "name": "psy01-elearning1",
+  "version": "0.1.0",
+  "homepage": "psy01-elearning1.spinf.de",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spinF/psy01-elearning1.git"
+  },
+  "private": true,
+
+  "dependencies": {
+    "d3": "4.4.0"
+  },
+
+  "devDependencies": {
+    "babel-preset-es2015": "6.18.0",
+    "event-stream": "3.3.4",
+    "gulp": "github:gulpjs/gulp.git#e9e5ab7e70080e1bfb5650a4fdc4c8849e70b3e0",
+    "gulp-uglify": "2.0.0",
+    "gulp-sass": "2.3.2",
+    "gulp-babel": "6.1.2",
+    "gulp-sourcemaps": "1.9.1"
+  },
+
+  "scripts": {
+    "build": "gulp"
+  }
+}

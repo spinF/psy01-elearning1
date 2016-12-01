@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta charset=utf8>
+<script src="./script/d3.min.js"></script>
+<link rel=stylesheet href="./style/default.css">
+<body>
+
+<script>
+var fullWidth = 900;
+var fullHeight = 400;
+var margin = {top: 20, right: 30, bottom: 30, left: 30};
+var width = fullWidth - margin.left - margin.right;
+var height = fullHeight - margin.top - margin.bottom;
+
+var x = d3.scaleLinear().domain([0,5]).range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+var histogram = d3.histogram()
+  .value(function(d) { return d.abiturnote; })
+  .domain(x.domain())
+  .thresholds([0,1,1.5,2,2.5,3,3.5,4,5]);
+
+var svg = d3.select("body")
+  .append("svg")
+    .attr("width", fullWidth)
+    .attr("height", fullHeight)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.append("g")
+  .attr("class", "axis axis--x")
+  .attr("transform", "translate(0," + (height+5) + ")")
+  .call(d3.axisBottom(x));
+
+svg.append("g")
+  .attr("class", "axis axis--y")
+  .attr("transform", "translate(-5,0)")
+  .call(d3.axisLeft(y));
+
+d3.csv("./data/lektion1/dataset_studienanfaenger.csv", function(error, data) {
+  if (error) throw error;
+
+  var bins = histogram(data)
+  y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+
+  var bar = svg.selectAll(".bar")
+    .data(bins)
+    .enter().append('g')
+      .attr('class', 'bar')
+      .attr('transform', function(d) {
+        return 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
+      });
+
+  bar.append("rect")
+    .attr("x", 1)
+    .attr("y", 0)
+    .attr("width", function(d) { return x(d.x1) - x(d.x0); })
+    .attr("height", function(d) { return height - y(d.length); });
+
+  bar.append("text")
+      .attr("y", -5)
+      .attr("x", function(d) { return (x(d.x1) - x(d.x0)) / 2; })
+      .attr("text-anchor", "middle")
+      .text(function(d) { return d3.format(',.0f')(d.length); });
+});
+</script>
+</body>

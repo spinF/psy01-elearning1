@@ -5,8 +5,10 @@ task clean(type: Delete) {
 }
 
 task buildR {
+  inputs.file('src/print/**/*.R')
+  outputs.file('build/latex')
   doLast {
-    new File('src/').eachFileRecurse(FileType.FILES) {
+    new File('src/print/').eachFileRecurse(FileType.FILES) {
       file ->
       if (file.name.endsWith('.R')) {
         exec {
@@ -19,7 +21,7 @@ task buildR {
 }
 
 task copyLatex(type: Sync) {
-  from 'src'
+  from 'src/print/'
   into 'build/latex/src'
   include '**/*.tex'
 }
@@ -28,10 +30,27 @@ task buildLatex(type: Exec) {
   dependsOn copyLatex
   dependsOn buildR
 
+  inputs.file('../src/lektion1.tex')
+  outputs.file("$buildDir/latex/output")
+
   workingDir "$buildDir/latex/output"
   commandLine 'pdflatex', '../src/lektion1.tex'
   doFirst {
     new File("$buildDir/latex/output").mkdirs();
+  }
+}
+
+task buildWeb(type: Exec) {
+  inputs.file("src/web/")
+  outputs.file("build/web")
+
+  workingDir "src/web/"
+  commandLine 'npm', 'run', 'build'
+  doFirst {
+    exec {
+      workingDir "src/web"
+      commandLine 'npm', 'install'
+    }
   }
 }
 
@@ -46,4 +65,5 @@ task dist(type: Sync) {
 
 task build {
   dependsOn buildLatex
+  dependsOn buildWeb
 }

@@ -1,0 +1,23 @@
+html, body {
+  background:#433;
+}
+
+.bar {
+  rect {
+    fill:#dcc;
+    stroke: none;
+  }
+  text {
+    fill:#dcc;
+    font: 10px sans-serif;
+  }
+}
+
+g.axis {
+  .domain, .tick line {
+    stroke:#dcc;
+  }
+  .tick text {
+    fill:#dcc;
+  }
+}
