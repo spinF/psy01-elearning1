@@ -10,6 +10,7 @@ task buildR {
       file ->
       if (file.name.endsWith('.R')) {
         exec {
+          workingDir "$projectDir"
           commandLine 'R', '-f', file.absolutePath
         }
       }
@@ -17,9 +18,9 @@ task buildR {
   }
 }
 
-task copyLatex(type: Copy) {
+task copyLatex(type: Sync) {
   from 'src'
-  into 'build'
+  into 'build/latex/src'
   include '**/*.tex'
 }
 
@@ -27,8 +28,20 @@ task buildLatex(type: Exec) {
   dependsOn copyLatex
   dependsOn buildR
 
-  workingDir 'build'
-  commandLine 'pdflatex', 'lektion1.tex'
+  workingDir "$buildDir/latex/output"
+  commandLine 'pdflatex', '../src/lektion1.tex'
+  doFirst {
+    new File("$buildDir/latex/output").mkdirs();
+  }
+}
+
+task dist(type: Sync) {
+  from "$buildDir/latex/output"
+  into "$buildDir/dist"
+  include "**/*.pdf"
+  doLast {
+    new File("$buildDir/dist").mkdirs();
+  }
 }
 
 task build {
