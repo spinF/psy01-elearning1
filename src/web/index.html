@@ -15,66 +15,17 @@
       <tr><th>Ge&shy;schlecht</th><th>Abitur&shy;note</th><th>Bundes&shy;land</th><th>Fehler im Arbeits&shy;gedächt&shy;nis&shy;test</th><th>Studien&shy;in&shy;te&shy;r&shy;es&shy;se</th><th>Leistungs&shy;an&shy;spruch</th><th>Prog&shy;nose Studien&shy;erfolg</th><th>Stu&shy;di&shy;en&shy;leis&shy;tung im Mo&shy;dul 1</th></tr>
     </table>
   </div>
-  <div class=section id=aufgabe1>
+  <div class=section>
     <h3>Aufgabe 1 a)</h3>
+    <div id=aufgabe1a_table>
+      <table>
+        <tr><th>Abiturnote (aggregiert)</th><th>Absolute Häufigkeit</th><th>Relative Häufigkeit</th><th>Relative kumulative Häufigkeit</th></tr>
+      </table>
+    </div>
+    <div id="aufgabe1a_histogram">
+    </div>
   </div>
 
 
 <script src="./script/default.js"></script>
-<script>
-
-var fullWidth = 900;
-var fullHeight = 500;
-var margin = {top: 20, right: 30, bottom: 35, left: 30};
-var width = fullWidth - margin.left - margin.right;
-var height = fullHeight - margin.top - margin.bottom;
-
-var x = d3.scaleLinear().domain([0,5]).range([0, width]);
-var y = d3.scaleLinear().range([height, 0]);
-
-var svg = d3.select("#aufgabe1")
-  .append("svg")
-    .attr("width", fullWidth)
-    .attr("height", fullHeight)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-svg.append("g")
-  .attr("class", "axis axis--x")
-  .attr("transform", "translate(0," + (height+10) + ")")
-  .call(d3.axisBottom(x));
-
-var yAxis = svg.append("g")
-  .attr("class", "axis axis--y")
-  .attr("transform", "translate(-10,0)")
-  .call(d3.axisLeft(y));
-
-d3.csv("./data/lektion1/dataset_studienanfaenger.csv", function(error, data) {
-  if (error) throw error;
-
-  var bins = abiturnoteHistogram(x.domain(), data);
-  y.domain([0, d3.max(bins, function(d) { return d.length; })]);
-  yAxis.call(d3.axisLeft(y));
-
-  var bar = svg.selectAll(".bar")
-    .data(bins)
-    .enter().append('g')
-      .attr('class', 'bar')
-      .attr('transform', function(d) {
-        return 'translate(' + x(d.x0) + ',' + y(d.length) + ')'
-      });
-
-  bar.append("rect")
-    .attr("x", 1)
-    .attr("y", 0)
-    .attr("width", function(d) { return x(d.x1) - x(d.x0); })
-    .attr("height", function(d) { return height - y(d.length); });
-
-  bar.append("text")
-      .attr("y", -5)
-      .attr("x", function(d) { return (x(d.x1) - x(d.x0)) / 2; })
-      .attr("text-anchor", "middle")
-      .text(function(d) { return d3.format(',.0f')(d.length); });
-});
-</script>
 </body>
