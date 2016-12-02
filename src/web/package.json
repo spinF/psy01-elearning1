@@ -10,7 +10,9 @@
   "private": true,
 
   "dependencies": {
-    "d3": "4.4.0"
+    "d3": "4.4.0",
+    "normalize.css": "5.0.0",
+    "roboto-fontface": "0.6.0"
   },
 
   "devDependencies": {
