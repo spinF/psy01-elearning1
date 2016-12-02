@@ -6,6 +6,7 @@ task clean(type: Delete) {
 
 task buildR {
   inputs.file('src/print/**/*.R')
+  inputs.file("data/")
   outputs.file('build/latex')
   doLast {
     new File('src/print/').eachFileRecurse(FileType.FILES) {
@@ -42,6 +43,7 @@ task buildLatex(type: Exec) {
 
 task buildWeb(type: Exec) {
   inputs.file("src/web/")
+  inputs.file("data/")
   outputs.file("build/web")
 
   workingDir "src/web/"

@@ -5,6 +5,10 @@ var sass = require('gulp-sass')
 var sourcemaps = require('gulp-sourcemaps')
 var uglify = require('gulp-uglify')
 
+gulp.task('font', () => {
+  return gulp.src('font/**')
+    .pipe(gulp.dest('../../build/web/font'))
+})
 
 gulp.task('data', () => {
   return gulp.src('../../data/**')
@@ -28,7 +32,7 @@ gulp.task('script', () => {
 gulp.task('style', () => {
   return gulp.src('style/**/*.scss')
     .pipe(sourcemaps.init())
-    .pipe(sass())
+    .pipe(sass({outputStyle: 'compressed'}))
     .pipe(sourcemaps.write('../sourcemaps'))
     .pipe(gulp.dest('../../build/web/style'))
 })
@@ -38,4 +42,4 @@ gulp.task('html', () => {
     .pipe(gulp.dest('../../build/web'))
 })
 
-gulp.task('default', gulp.parallel('data', 'html', 'script', 'style'));
+gulp.task('default', gulp.parallel('data', 'font', 'html', 'script', 'style'));

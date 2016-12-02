@@ -5,24 +5,34 @@
 <script src="./script/d3.min.js"></script>
 <title>BM PSY01 EL1</title>
 <body>
+  <div>
+    <h1>Basismodul PSY01 – E-Learning-Kurs 1</h1>
+    <h2>Lektion 1</h2>
+  </div>
+  <div class=section>
+    <h3>Zugrundeliegende Daten</h3>
+    <table id=data>
+      <tr><th>Ge&shy;schlecht</th><th>Abitur&shy;note</th><th>Bundes&shy;land</th><th>Fehler im Arbeits&shy;gedächt&shy;nis&shy;test</th><th>Studien&shy;in&shy;te&shy;r&shy;es&shy;se</th><th>Leistungs&shy;an&shy;spruch</th><th>Prog&shy;nose Studien&shy;erfolg</th><th>Stu&shy;di&shy;en&shy;leis&shy;tung im Mo&shy;dul 1</th></tr>
+    </table>
+  </div>
+  <div class=section id=aufgabe1>
+    <h3>Aufgabe 1 a)</h3>
+  </div>
+
 
 <script src="./script/default.js"></script>
 <script>
+
 var fullWidth = 900;
-var fullHeight = 400;
-var margin = {top: 20, right: 30, bottom: 30, left: 30};
+var fullHeight = 500;
+var margin = {top: 20, right: 30, bottom: 35, left: 30};
 var width = fullWidth - margin.left - margin.right;
 var height = fullHeight - margin.top - margin.bottom;
 
 var x = d3.scaleLinear().domain([0,5]).range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
 
-var histogram = d3.histogram()
-  .value(function(d) { return d.abiturnote; })
-  .domain(x.domain())
-  .thresholds([0,1,1.5,2,2.5,3,3.5,4,5]);
-
-var svg = d3.select("body")
+var svg = d3.select("#aufgabe1")
   .append("svg")
     .attr("width", fullWidth)
     .attr("height", fullHeight)
@@ -31,19 +41,20 @@ var svg = d3.select("body")
 
 svg.append("g")
   .attr("class", "axis axis--x")
-  .attr("transform", "translate(0," + (height+5) + ")")
+  .attr("transform", "translate(0," + (height+10) + ")")
   .call(d3.axisBottom(x));
 
-svg.append("g")
+var yAxis = svg.append("g")
   .attr("class", "axis axis--y")
-  .attr("transform", "translate(-5,0)")
+  .attr("transform", "translate(-10,0)")
   .call(d3.axisLeft(y));
 
 d3.csv("./data/lektion1/dataset_studienanfaenger.csv", function(error, data) {
   if (error) throw error;
 
-  var bins = histogram(data)
+  var bins = abiturnoteHistogram(x.domain(), data);
   y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+  yAxis.call(d3.axisLeft(y));
 
   var bar = svg.selectAll(".bar")
     .data(bins)

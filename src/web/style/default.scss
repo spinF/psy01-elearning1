@@ -1,3 +1,5 @@
+$colorStrokeDefault: #dcc;
+
 @font-face {
   font-family: 'Roboto';
   src: url('../font/Roboto-Regular.eot');
@@ -25,25 +27,75 @@
 }
 
 html, body {
+  background:#322;
+  color:$colorStrokeDefault;
+  font: 16px Roboto, sans-serif;
+  text-align: center;
+}
+
+body {
+  display:inline-block;
+  min-height:100%;
+  min-height:100vh;
   background:#433;
+  margin:0 2%;
+  width:96%;
+  .section {
+    margin:2em 0;
+  }
+}
+
+table {
+  display:inline-block;
+  border-collapse: collapse;
+  border-bottom: 1px solid $colorStrokeDefault;
+  tr {
+    th {
+      border-top: 1px solid $colorStrokeDefault;
+      border-bottom: 1px solid $colorStrokeDefault;
+    }
+    td, th {
+      padding:.25em .75em;
+    }
+    td {
+      transition: .5s ease-out background;
+    }
+    &:hover td {
+      background:#544;
+    }
+  }
+}
+
+svg text {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+     -khtml-user-select: none; /* Konqueror */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+  cursor:default;
 }
 
 .bar {
   rect {
-    fill:#dcc;
-    stroke: none;
+    fill:#900;
+    stroke: $colorStrokeDefault;
+    transition:.5s ease-out fill;
+    &:hover {
+      fill:#b11;
+    }
   }
   text {
-    fill:#dcc;
-    font: 10px sans-serif;
+    fill:$colorStrokeDefault;
   }
 }
 
 g.axis {
   .domain, .tick line {
-    stroke:#dcc;
+    stroke:$colorStrokeDefault;
   }
   .tick text {
-    fill:#dcc;
+    fill:$colorStrokeDefault;
+    font-size:16px;
   }
 }
