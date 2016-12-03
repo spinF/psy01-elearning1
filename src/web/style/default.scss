@@ -40,6 +40,8 @@ body {
   min-width:800px;
   background:#433;
   margin:0;
+  padding:1em;
+  box-sizing: border-box;
   width:100%;
   @media (min-width: 1000px) {
     margin:0 5%;
@@ -68,42 +70,57 @@ table {
     td {
       transition: .5s ease-out background;
     }
-    &:hover td {
-      background:#544;
-    }
+  }
+  tr:hover td {
+    background:#544;
+  }
+  tr td:focus, tr td:focus:hover,
+  tr:hover td:focus, tr:hover td:focus:hover {
+    background:#fff;
+    color:#433;
+    box-shadow: inset 0 0 2px #000;
+  }
+}
+footer {
+  margin:10em 0 5em;
+  &, & a {
+    color: darken($colorStrokeDefault, 25);
   }
 }
 
-svg text {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Chrome/Safari/Opera */
-     -khtml-user-select: none; /* Konqueror */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none;
-  cursor:default;
-}
+svg {
+  text {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Chrome/Safari/Opera */
+       -khtml-user-select: none; /* Konqueror */
+         -moz-user-select: none; /* Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none;
+    cursor:default;
+  }
 
-.bar {
-  rect {
-    fill:#900;
-    stroke: $colorStrokeDefault;
-    transition:.5s ease-out fill;
-    &:hover {
-      fill:#b11;
+  .bar {
+    rect {
+      fill:#900;
+      stroke: $colorStrokeDefault;
+      transition:.5s ease-out fill;
+      &:hover {
+        fill:#b11;
+      }
     }
   }
   text {
     fill:$colorStrokeDefault;
+    stroke:none;
   }
-}
 
-g.axis {
-  .domain, .tick line {
-    stroke:$colorStrokeDefault;
-  }
-  .tick text {
-    fill:$colorStrokeDefault;
-    font-size:16px;
+  g.axis {
+    .domain, .tick line {
+      stroke:$colorStrokeDefault;
+    }
+    .tick text {
+      fill:$colorStrokeDefault;
+      font-size:16px;
+    }
   }
 }
