@@ -27,6 +27,18 @@ function abiturnoteHistogram(data) {
   return result
 }
 
+function studienerfolgsprognoseFrequencyTable(data) {
+  var result = [
+    {count: 0, label: 'niedrig'},
+    {count: 0, label: 'mittel'},
+    {count: 0, label: 'hoch'}
+  ]
+  for (var j = 0; j < data.length; j++) {
+    result[data[j].prognoseStudienerfolg - 1]['count']++
+  }
+  return result
+}
+
 function getTableCell(content, row = null, col = null, isEditable = false) {
   var cell = document.createElement('td')
   cell.appendChild(document.createTextNode(content))
@@ -55,16 +67,28 @@ function fillDatasetTable(data) {
   }
 }
 
-function fillAbiturnoteFreqTable(bins, numRows) {
-  document.querySelector('#aufgabe1a_table table tbody').innerHTML = ""
+function fillFreqTable(querySelector, bins) {
+  document.querySelector(querySelector).innerHTML = ""
   var cum = 0;
   for (var i = 0; i < bins.length; i++) {
     var row = document.createElement('tr')
     row.appendChild(getTableCell('(' + bins[i]['x0'] + ', ' + bins[i]['x1'] + ']'))
     row.appendChild(getTableCell(bins[i].length))
-    row.appendChild(getTableCell((bins[i].length / numRows).toFixed(3)))
-    row.appendChild(getTableCell((cum += bins[i].length / numRows).toFixed(3)))
-    document.querySelector('#aufgabe1a_table table tbody').appendChild(row)
+    row.appendChild(getTableCell((bins[i].length / dataset.length).toFixed(3)))
+    row.appendChild(getTableCell((cum += bins[i].length / dataset.length).toFixed(3)))
+    document.querySelector(querySelector).appendChild(row)
+  }
+}
+function fillPieChartFreqTable(querySelector, data) {
+  document.querySelector(querySelector).innerHTML = ""
+  var cum = 0;
+  for (var i = 0; i < data.length; i++) {
+    var row = document.createElement('tr')
+    row.appendChild(getTableCell(data[i].label))
+    row.appendChild(getTableCell(data[i].count))
+    row.appendChild(getTableCell((data[i].count / dataset.length).toFixed(3)))
+    row.appendChild(getTableCell((cum += data[i].count / dataset.length).toFixed(3)))
+    document.querySelector(querySelector).appendChild(row)
   }
 }
 
@@ -125,8 +149,9 @@ d3.csv("./data/lektion1/dataset_studienanfaenger.csv", function(error, data) {
 })
 
 function updateDiagrams() {
+  fillPieChartFreqTable('#aufgabe1b_table tbody', studienerfolgsprognoseFrequencyTable(dataset))
   var bins = abiturnoteHistogram(dataset);
-  fillAbiturnoteFreqTable(bins, dataset.length);
+  fillFreqTable('#aufgabe1a_table tbody', bins);
 
   y.domain([0, d3.max(bins, function(d) { return d.length / (d.x1 - d.x0); })]);
 
