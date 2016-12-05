@@ -29,9 +29,9 @@ function abiturnoteHistogram(data) {
 
 function studienerfolgsprognoseFrequencyTable(data) {
   var result = [
-    {count: 0, label: 'niedrig'},
-    {count: 0, label: 'mittel'},
-    {count: 0, label: 'hoch'}
+    {count: 0, label: 'niedrig', id: 1},
+    {count: 0, label: 'mittel', id: 2},
+    {count: 0, label: 'hoch', id: 3}
   ]
   for (var j = 0; j < data.length; j++) {
     result[data[j].prognoseStudienerfolg - 1]['count']++
@@ -95,7 +95,6 @@ function fillPieChartFreqTable(querySelector, data) {
 function editableListener(event) {
   if (event.which == 13 /* enter key */ || event.type == 'blur') {
     if (event.target.innerHTML.match(/^[0-9]+\.[0-9]+$/)) {
-      console.log("Value matches")
       dataset[event.target.dataset.row][event.target.dataset.col] = Math.min(domainAbiturnote[1], Math.max(domainAbiturnote[0], parseFloat(event.target.innerHTML)))
       updateDiagrams()
     }
@@ -116,6 +115,8 @@ var height = fullHeight - margin.top - margin.bottom;
 var x = d3.scaleLinear().domain(domainAbiturnote).range([0, width]);
 var y = d3.scaleLinear().range([height, 0]);
 
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
 var svg = d3.select("#aufgabe1a_histogram")
   .append("svg")
     .attr("width", fullWidth)
@@ -126,7 +127,7 @@ var svg = d3.select("#aufgabe1a_histogram")
 svg.append("g")
   .attr("class", "axis axis--x")
   .attr("transform", "translate(0," + (height+10) + ")")
-  .call(d3.axisBottom(x));
+  .call(d3.axisBottom(x).tickValues(thresholdsAbiturnote.concat(domainAbiturnote)));
 
 var yAxis = svg.append("g")
   .attr("class", "axis axis--y")
@@ -141,6 +142,24 @@ svg.append("text")
   .attr('y', -65)
   .text('Absolute Häufigkeitsdichte')
 
+var pieChartSvg = d3.select("#aufgabe1b_piechart").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+var pieRadius = Math.min(width, height) / 2 - 20
+var pieArc = d3.arc()
+  .outerRadius(pieRadius)
+  .innerRadius(0);
+var pieLabelArc = d3.arc()
+    .outerRadius(pieRadius / 3 * 2)
+    .innerRadius(pieRadius / 3 * 2);
+
+var pie = d3.pie()
+    .sort(null)
+    .value(function(d) { return d.count; })
+
 d3.csv("./data/lektion1/dataset_studienanfaenger.csv", function(error, data) {
   if (error) throw error;
   dataset = data
@@ -149,7 +168,7 @@ d3.csv("./data/lektion1/dataset_studienanfaenger.csv", function(error, data) {
 })
 
 function updateDiagrams() {
-  fillPieChartFreqTable('#aufgabe1b_table tbody', studienerfolgsprognoseFrequencyTable(dataset))
+  /* Exercise 1a: Histogram */
   var bins = abiturnoteHistogram(dataset);
   fillFreqTable('#aufgabe1a_table tbody', bins);
 
@@ -187,4 +206,25 @@ function updateDiagrams() {
     svg.selectAll('.bar text').data(bins)
       .text(function(d) { return d3.format(',.0f')(d.length); })
   }
+
+  /* Exercise 1b: Pie chart */
+  var pieFrequencies = studienerfolgsprognoseFrequencyTable(dataset)
+  fillPieChartFreqTable('#aufgabe1b_table tbody', pieFrequencies)
+
+
+
+  var pieChart = pieChartSvg.selectAll('.arc').data(pie(pieFrequencies))
+    .enter().append('g')
+      .attr('class', 'arc')
+
+  pieChart.append('path')
+    .attr('d', pieArc)
+    .style("fill", (d) => { return color(d.data.id) });
+
+  pieChart.append('text')
+    .attr("transform", function(d) { return "translate(" + pieLabelArc.centroid(d) + ")"; })
+    .attr('text-anchor', 'middle')
+    .style('fill', '#000')
+    .text(function(d) { return d.data.label + ' (' + d.data.count + ')'; });
+
 }
